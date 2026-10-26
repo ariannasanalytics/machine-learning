@@ -1,0 +1,141 @@
+IS 327 Final Project Report
+Predicting Heart Disease Diagnosis with Machine Learning Models
+Arianna Caveney
+Course: IS327 – Concepts of Machine Learning
+Date: May 11, 2025
+
+1. Introduction
+The objective of this project is to apply machine learning models to determine if a patient does or does not have heart disease based on 13 features such as chest pain type and specific test results. This project illustrates a complete picture of the machine learning pipeline from the processing of the data itself to tuning selected models based on performance. 
+
+2. Dataset Description
+•	Source: UCI Machine Learning Repository – Heart Disease dataset (Cleveland subset)
+•	Type: Binary classification task
+•	Instances:
+o	Originally 303 patient records
+o	Reduced to 297 after dropping rows with missing values
+•	Features:
+
+13 clinical variables per patient, including:
+o	age: age in years
+o	sex: 0 = female, 1 = male
+o	cp: chest pain type (4 categories)
+o	trestbps: resting blood pressure
+o	chol: serum cholesterol
+o	fbs: fasting blood sugar > 120 mg/dl
+o	restecg: resting ECG results
+o	thalach: maximum heart rate achieved
+o	exang: exercise-induced angina
+o	oldpeak: ST depression from exercise
+o	slope: slope of the ST segment
+o	ca: number of major vessels visualized by fluoroscopy
+o	thal: thalassemia test result (normal, fixed defect, reversible defect)
+
+•	Target Variable:
+o	target: originally 0–4 indicating severity
+o	Binarized to:
+	0 = no heart disease
+	1 = presence of heart disease (≥50% arterial narrowing)
+
+•	Missing Values:
+o	Present in ca and thal (represented as ?)
+o	Handled by converting to NaN and dropping affected rows (6 total)
+
+•	Class Balance:
+o	168 patients with no heart disease
+o	129 patients with heart disease
+o	Nearly balanced for a medical classification task
+
+•	Data Handling:
+o	Loaded using pandas
+o	Cleaned and converted to numeric
+o	Scaled using StandardScaler to prepare for modeling
+
+3. Data Preprocessing
+•	Verified class distribution: 168 no heart disease, 129 with heart disease
+•	Features scaled using StandardScaler to zero mean and unit variance
+•	Target variable binarized: 0 = no disease, 1 = disease present
+•	Missing values in ca and thal: converted to NaN and dropped 6 affected rows
+•	No categorical encoding needed: all features were already numeric or encoded as integers
+
+
+4. Feature Engineering
+I decided against feature engineering since the AUC-ROC was already around 0.96. I think if it did have a positive impact on the model, it would only be marginal, so I did not include it. Some potential routes could have been:
+•	Cholesterol based on age – variable that normalizes cholesterol based on expected age-related increase
+•	Chest pain type – an abnormal vs. normal chest pain type Boolean, rather than the three or so different types
+•	Single risk load score – a value that combines fbs, exang, and/or ca to create the sum of all risk factor scores
+
+
+5. Model Development
+•	In order to move forward with a model with the best performance possible, I implemented three classification models: Logistic Regression, Support Vector Machine (SVM), and Random Forest Classifier
+•	Random Forest performed the best, so it was tuned using 5-fold cross-validation
+o	Model Tuning via GridSearchCV for Hyperparameter tuning
+o	Bias-variance analysis using learning_curve()
+
+
+6. Underfitting and Overfitting
+•	Learning curves were plotted for the tuned Random Forest; 5-fold cross-validation used
+•	The models were initially severely overfitted with the training accuracy at 1.0, but this was corrected after tuning
+•	Training accuracy dropped and the validation curve was more stable, indicating an improvement in generalization of the model
+•	The previous models also showed early signs of this: logistic regression slightly underfit the data, while SVM showed small indications of overfitting
+
+
+7. Model Evaluation
+•	Evaluation metrics: Accuracy, Precision, Recall, F1 Score, and AUC-ROC
+•	Final test performance per model (approximations):
+
+o	Logistic regression: 
+	Accuracy – 0.83
+	Precision – 0.846
+	F1 – 0.815
+	AUC-ROC – 0.95
+
+o	SVM: 
+	Accuracy – 0.85
+	Precision – 0.88
+	F1 – 0.83
+	AUC-ROC – 0.954
+
+o	Random Forest: Untuned
+	Accuracy – 0.867
+	Precision – 0.885
+	F1 – 0.85
+	AUC-ROC – 0.94
+
+o	Random Forest: Tuned
+	Accuracy – 0.85
+	Precision – 0.88
+	F1 – 0.83
+	AUC-ROC – 0.951
+
+•	The confusion matrices showed that the tuned model had relatively few false negatives with a good balance between the true positives and negatives
+o	This indicates the model was effective in correctly identifying those with heart disease while missing minimal cases, which would be life-threatening in a clinical setting
+
+
+8. Conclusion
+After testing all of the models, and finding SVM as not learning as well as necessary as data set size increases initially in a separate test, 
+Random Forest was the model that was best able to predict heart disease based on these crucial metrics. This is a significant finding in the use of machine 
+learning in predictive models in medicine. Using proper processing and tuning models manually play major roles in the efficiency, effectiveness, and 
+optimization of features and results. Future direction could include larger studies with more data and features, or even the use of a similar model on other
+types of medical data. 
+
+
+9. References
+•	UCI Machine Learning Repository
+Heart Disease (Cleveland) Dataset
+https://archive.ics.uci.edu/ml/datasets/Heart+Disease
+•	scikit-learn: Machine Learning in Python
+Pedregosa et al., Journal of Machine Learning Research, 2011
+https://scikit-learn.org/stable/
+•	pandas: Python Data Analysis Library
+https://pandas.pydata.org/
+•	NumPy: The Fundamental Package for Scientific Computing
+https://numpy.org/
+•	Matplotlib: Python Plotting Library
+https://matplotlib.org/
+•	Seaborn: Statistical Data Visualization
+https://seaborn.pydata.org/
+•	Python Software Foundation
+Python Language Reference, version 3.x
+https://www.python.org/
+
+
